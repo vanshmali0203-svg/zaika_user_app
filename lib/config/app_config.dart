@@ -11,10 +11,10 @@ class AppConfig {
       String baseUrl;
       switch (env) {
         case Environment.STAGING:
-          baseUrl = 'https://staging.zaika.ltd';
+          baseUrl = 'https://staging.zaika.life';
           break;
         case Environment.PRODUCTION:
-          baseUrl = 'https://zaika.ltd';
+          baseUrl = 'https://zaika.life';
           break;
       }
       _instance = AppConfig(environment: env, baseUrl: baseUrl);

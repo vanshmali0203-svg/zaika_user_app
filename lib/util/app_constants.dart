@@ -5,14 +5,14 @@ import 'package:get/get.dart';
 
 class AppConstants {
   static const String appName = 'Zaika';
-  static const double appVersion = 8.0;
+  static const double appVersion = 12.0;
   static const String fontFamily = 'Roboto';
   static const bool payInWevView = false;
   static const String webHostedUrl = '';
   static const bool useReactWebsite = false;
 //https://zaika.ltd/api/v1/zone/list
-  static String get baseUrl => AppConfig.instance.baseUrl;
-  // static String baseUrl = 'https://zaika.ltd';
+  // static String get baseUrl => AppConfig.instance.baseUrl;
+  static String baseUrl = 'https://zaika.life';
   static const String categoryUri = '/api/v1/categories';
   static const String bannerUri = '/api/v1/banners';
   static const String restaurantProductUri = '/api/v1/products/latest';

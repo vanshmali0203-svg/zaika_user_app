@@ -13,60 +13,50 @@ class SplashRepository implements SplashRepositoryInterface {
   final SharedPreferences sharedPreferences;
   SplashRepository({required this.apiClient, required this.sharedPreferences});
 
-  // @override
-  // Future<Response> getConfigData({required DataSourceEnum? source}) async {
-  //   return await apiClient.getData(AppConstants.configUri);
-  // }
-
   @override
   Future<Response> getConfigData({required DataSourceEnum? source}) async {
-    if (source == DataSourceEnum.local) {
-      String? cachedData = sharedPreferences.getString(AppConstants.configCacheKey);
-      if (cachedData != null) {
-        return Response(statusCode: 200, body: jsonDecode(cachedData));
-      } else {
-        return await getConfigDataFromApi();
-      }
-    } else {
-      return await getConfigDataFromApi();
-    }
+    return await getConfigDataFromApi();
+    // }
   }
 
   Future<Response> getConfigDataFromApi() async {
     Response response = await apiClient.getData(AppConstants.configUri);
     if (response.statusCode == 200) {
-      sharedPreferences.setString(AppConstants.configCacheKey, jsonEncode(response.body));
+      sharedPreferences.setString(
+          AppConstants.configCacheKey, jsonEncode(response.body));
     }
     return response;
   }
 
   @override
   Future<bool> initSharedData() {
-    if(!sharedPreferences.containsKey(AppConstants.theme)) {
+    if (!sharedPreferences.containsKey(AppConstants.theme)) {
       sharedPreferences.setBool(AppConstants.theme, false);
     }
-    if(!sharedPreferences.containsKey(AppConstants.countryCode)) {
-      sharedPreferences.setString(AppConstants.countryCode, AppConstants.languages[0].countryCode!);
+    if (!sharedPreferences.containsKey(AppConstants.countryCode)) {
+      sharedPreferences.setString(
+          AppConstants.countryCode, AppConstants.languages[0].countryCode!);
     }
-    if(!sharedPreferences.containsKey(AppConstants.languageCode)) {
-      sharedPreferences.setString(AppConstants.languageCode, AppConstants.languages[0].languageCode!);
+    if (!sharedPreferences.containsKey(AppConstants.languageCode)) {
+      sharedPreferences.setString(
+          AppConstants.languageCode, AppConstants.languages[0].languageCode!);
     }
-    if(!sharedPreferences.containsKey(AppConstants.cartList)) {
+    if (!sharedPreferences.containsKey(AppConstants.cartList)) {
       sharedPreferences.setStringList(AppConstants.cartList, []);
     }
-    if(!sharedPreferences.containsKey(AppConstants.searchHistory)) {
+    if (!sharedPreferences.containsKey(AppConstants.searchHistory)) {
       sharedPreferences.setStringList(AppConstants.searchHistory, []);
     }
-    if(!sharedPreferences.containsKey(AppConstants.notification)) {
+    if (!sharedPreferences.containsKey(AppConstants.notification)) {
       sharedPreferences.setBool(AppConstants.notification, true);
     }
-    if(!sharedPreferences.containsKey(AppConstants.intro)) {
+    if (!sharedPreferences.containsKey(AppConstants.intro)) {
       sharedPreferences.setBool(AppConstants.intro, true);
     }
-    if(!sharedPreferences.containsKey(AppConstants.notificationCount)) {
+    if (!sharedPreferences.containsKey(AppConstants.notificationCount)) {
       sharedPreferences.setInt(AppConstants.notificationCount, 0);
     }
-    if(sharedPreferences.containsKey(AppConstants.referBottomSheet)) {
+    if (sharedPreferences.containsKey(AppConstants.referBottomSheet)) {
       sharedPreferences.setBool(AppConstants.referBottomSheet, true);
     }
     return Future.value(true);
@@ -109,15 +99,15 @@ class SplashRepository implements SplashRepositoryInterface {
 
   @override
   void cookiesStatusChange(String? data) {
-    if(data != null){
+    if (data != null) {
       sharedPreferences.setString(AppConstants.cookiesManagement, data);
     }
   }
 
   @override
-  bool getAcceptCookiesStatus(String data) => sharedPreferences.getString(AppConstants.cookiesManagement) != null
-      && sharedPreferences.getString(AppConstants.cookiesManagement) == data;
-
+  bool getAcceptCookiesStatus(String data) =>
+      sharedPreferences.getString(AppConstants.cookiesManagement) != null &&
+      sharedPreferences.getString(AppConstants.cookiesManagement) == data;
 
   // Future<Response> getHtmlText(HtmlType htmlType) async {
   //   return await apiClient.getData(
@@ -135,7 +125,8 @@ class SplashRepository implements SplashRepositoryInterface {
 
   @override
   Future<Response> subscribeEmail(String email) async {
-    return await apiClient.postData(AppConstants.subscriptionUri, {'email': email});
+    return await apiClient
+        .postData(AppConstants.subscriptionUri, {'email': email});
   }
 
   @override
@@ -176,5 +167,4 @@ class SplashRepository implements SplashRepositoryInterface {
   Future update(Map<String, dynamic> body, int? id) {
     throw UnimplementedError();
   }
-
 }

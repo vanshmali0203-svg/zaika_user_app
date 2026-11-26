@@ -47,8 +47,8 @@ class _PickMapDialogState extends State<PickMapDialog> {
     }
     Get.find<LocationController>().makeLoadingOff();
     _initialPosition = LatLng(
-      double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lat ?? '0'),
-      double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lng ?? '0'),
+      double.parse(Get.find<SplashController>().configModel?.defaultLocation?.lat ?? '20.0059'),
+      double.parse(Get.find<SplashController>().configModel?.defaultLocation?.lng ?? '73.7902'),
     );
   }
 
@@ -222,7 +222,7 @@ class _PickMapDialogState extends State<PickMapDialog> {
   }
 
   void _onPickAddressButtonPressed(LocationController locationController) {
-    if(locationController.pickPosition.latitude != 0 && locationController.pickAddress!.isNotEmpty) {
+    if(locationController.pickPosition.latitude != 0 && (locationController.pickAddress?.isNotEmpty ?? false)) {
       if(widget.onPicked != null) {
         AddressModel address = AddressModel(
           latitude: locationController.pickPosition.latitude.toString(),

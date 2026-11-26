@@ -138,7 +138,7 @@ class ApiClient extends GetxService {
               multipart.key,
               file.readAsBytes().asStream(),
               file.lengthSync(),
-              filename: file.path.split('/').last,
+              filename: basename(file.path),
             ));
           }
         }

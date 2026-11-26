@@ -27,6 +27,7 @@ class OrderPricingSection extends StatelessWidget {
   final String? contactNumber;
   final double extraPackagingAmount;
   final double referrerBonusAmount;
+  final double signupBonus;
   const OrderPricingSection(
       {super.key,
       required this.itemsPrice,
@@ -43,7 +44,8 @@ class OrderPricingSection extends StatelessWidget {
       this.orderId,
       this.contactNumber,
       required this.extraPackagingAmount,
-      required this.referrerBonusAmount});
+      required this.referrerBonusAmount,
+      required this.signupBonus});
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +244,15 @@ class OrderPricingSection extends StatelessWidget {
                                     color: Theme.of(context).primaryColor)),
                       ])
                 : const SizedBox(),
-
+            SizedBox(height: Dimensions.paddingSizeSmall),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text('SignUp Bonus'.tr, style: robotoRegular),
+              Text(
+                '(-) ${PriceConverter.convertPrice(signupBonus)}',
+                style: robotoRegular,
+                textDirection: TextDirection.ltr,
+              )
+            ]),
             Padding(
               padding: const EdgeInsets.symmetric(
                   vertical: Dimensions.paddingSizeSmall),

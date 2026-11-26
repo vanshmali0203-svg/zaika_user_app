@@ -12,6 +12,9 @@ class UserInfoModel {
   int? memberSinceDays;
   double? walletBalance;
   int? loyaltyPoint;
+  double? signUpBonus;
+  double? signUpBonuspercent;
+  int? sbStatus;
   String? refCode;
   int? socialId;
   User? userInfo;
@@ -35,6 +38,9 @@ class UserInfoModel {
     this.memberSinceDays,
     this.walletBalance,
     this.loyaltyPoint,
+    this.signUpBonus,
+    this.signUpBonuspercent,
+    this.sbStatus,
     this.refCode,
     this.socialId,
     this.userInfo,
@@ -59,9 +65,13 @@ class UserInfoModel {
     memberSinceDays = json['member_since_days'];
     walletBalance = json['wallet_balance'].toDouble();
     loyaltyPoint = json['loyalty_point'];
+    signUpBonus = json['s_bonus_amount']?.toDouble();
+    signUpBonuspercent = json['s_bonus_percent']?.toDouble();
+    sbStatus = json['sb_status'];
     refCode = json['ref_code'];
     socialId = json['social_id'];
-    userInfo = json['userinfo'] != null ? User.fromJson(json['userinfo']) : null;
+    userInfo =
+        json['userinfo'] != null ? User.fromJson(json['userinfo']) : null;
     createdAt = json['created_at'];
     validity = json['validity'];
     isValidForDiscount = json['is_valid_for_discount'] ?? false;
@@ -84,6 +94,9 @@ class UserInfoModel {
     data['member_since_days'] = memberSinceDays;
     data['wallet_balance'] = walletBalance;
     data['loyalty_point'] = loyaltyPoint;
+    data['s_bonus_amount'] = signUpBonus;
+    data['s_bonus_percent'] = signUpBonuspercent;
+    data['sb_status'] = sbStatus;
     data['ref_code'] = refCode;
     if (userInfo != null) {
       data['userinfo'] = userInfo!.toJson();

@@ -253,8 +253,9 @@ class RouteHelper {
     return '$payment?order=$data&payment-method=$paymentMethod&add-fund-url=$addFundUrl&subscription-url=$subscriptionUrl&guest-id=$guestId&number=$contactNumber&restaurant_id=$restaurantId&package_id=$packageId';
   }
 
-  static String getCheckoutRoute(String page, {bool fromDineIn = false}) =>
-      '$checkout?page=$page&from_dine_in=$fromDineIn';
+  static String getCheckoutRoute(String page,
+          {bool fromDineIn = false, double? itemsPrice, double? discount}) =>
+      '$checkout?page=$page&from_dine_in=$fromDineIn&itemsPrice=$itemsPrice&discount=$discount';
   static String getOrderTrackingRoute(int? id, String? contactNumber) =>
       '$orderTracking?id=$id&contact_number=$contactNumber';
   static String getBasicCampaignRoute(BasicCampaignModel basicCampaignModel) {
@@ -663,6 +664,9 @@ class RouteHelper {
                       cartList: null,
                       fromCart: Get.parameters['page'] == 'cart',
                       fromDineInPage: Get.parameters['from_dine_in'] == 'true',
+                      itemsPrice:
+                          double.parse(Get.parameters['itemsPrice'] ?? '0'),
+                      discount: double.parse(Get.parameters['discount']!),
                     )));
         }),
     GetPage(

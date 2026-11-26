@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:zaika/common/models/response_model.dart';
 import 'package:zaika/features/cart/controllers/cart_controller.dart';
 import 'package:zaika/features/auth/controllers/auth_controller.dart';
@@ -87,8 +88,10 @@ class ProfileController extends GetxController implements GetxService {
       _pickedFile = null;
       showCustomSnackBar(responseModel.message, isError: false);
       await getUserInfo();
-    }  else if(!responseModel.isSuccess && responseModel.updateProfileResponseModel != null){
+    } else if(!responseModel.isSuccess && responseModel.updateProfileResponseModel != null){
       showCustomSnackBar(responseModel.updateProfileResponseModel!.message);
+    } else {
+      showCustomSnackBar(responseModel.message);
     }
   }
 
@@ -106,9 +109,15 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   void pickImage(bool isCamera) async {
-    XFile? _pickedProfileFile = await ImagePicker().pickImage(source: isCamera ? ImageSource.camera : ImageSource.gallery, imageQuality: 50);
-    _pickedFile = _pickedProfileFile;
-    update();
+    try {
+      XFile? _pickedProfileFile = await ImagePicker().pickImage(source: isCamera ? ImageSource.camera : ImageSource.gallery, imageQuality: 50);
+      if (_pickedProfileFile != null) {
+        _pickedFile = _pickedProfileFile;
+        update();
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+    }
   }
 
   void initData() {

@@ -47,6 +47,7 @@ class PriceConverter {
         price = price! - ((discount / 100) * price);
       }
     }
+
     bool isRightSide =
         Get.find<SplashController>().configModel!.currencySymbolDirection ==
             'right';
