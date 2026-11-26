@@ -100,7 +100,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           GetBuilder<ProfileController>(builder: (profileController) {
             if(profileController.userInfoModel != null && _phoneController.text.isEmpty && _isPhoneLoading) {
               _splitPhoneNumber(profileController.userInfoModel!.phone??'');
-              _nameController.text = '${profileController.userInfoModel!.fName} ${profileController.userInfoModel!.lName}';
+              _nameController.text = '${profileController.userInfoModel!.fName ?? ''} ${profileController.userInfoModel!.lName ?? ''}'.trim();
               _emailController.text = profileController.userInfoModel!.email ?? '';
             }
 
@@ -533,7 +533,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }else if (phoneNumber.length < 6) {
       showCustomSnackBar('enter_a_valid_phone_number'.tr);
     } else {
-      UpdateUserModel updatedUser = UpdateUserModel(name: name, email: email, phone: numberWithCountryCode, buttonType: fromButton ? '' : fromPhone ? 'phone' : 'email');
+      UpdateUserModel updatedUser = UpdateUserModel(
+        name: name,
+        email: email,
+        phone: numberWithCountryCode,
+        buttonType: fromButton ? 'update' : fromPhone ? 'phone' : 'email',
+      );
       await profileController.updateUserInfo(updatedUser, Get.find<AuthController>().getUserToken(), fromButton: fromButton);
     }
   }

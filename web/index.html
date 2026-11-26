@@ -65,10 +65,10 @@
     firebase.initializeApp(firebaseConfig);
   </script>
 
-<!-- Preloader -->
+<!-- Preloader Commented Out to load main screen directly -->
+<!--
 <div class="preloader">
   <div class="preloader-container">
-    <!-- <img width="80" class="preloader-img" src="assets/img/preloader.png" alt=""> -->
     <div id="animation-container">
       <img width="80" height="80" src="assets/img/1.png" class="animation-image" alt="" />
       <img width="80" height="80" src="assets/img/2.png" class="animation-image" alt="" />
@@ -81,7 +81,6 @@
     <div class="loader"></div>
   </div>
 </div>
-<!-- Header -->
 <header class="header">
   <div class="header-container d-flex align-items-center justify-content-between">
     <div class="header-start d-flex gap-5 align-items-center">
@@ -106,7 +105,10 @@
     </div>
   </div>
 </header>
-<!-- Script Goes Here -->
+-->
+
+<!-- Script for cycling preloader images commented out -->
+<!--
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     var images = document.querySelectorAll(".animation-image");
@@ -119,10 +121,10 @@
         nextImage.style.display = "block";
         currentIndex = nextIndex;
     }
-    // Set an interval to call the cycleImages function every 3 seconds
     setInterval(cycleImages, 250);
     });
 </script>
+-->
 
 <script>
   // Check if localStorage is supported in the browser

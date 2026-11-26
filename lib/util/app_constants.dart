@@ -11,8 +11,8 @@ class AppConstants {
   static const String webHostedUrl = '';
   static const bool useReactWebsite = false;
 //https://zaika.ltd/api/v1/zone/list
-  static String get baseUrl => AppConfig.instance.baseUrl;
-  // static String baseUrl = 'https://zaika.ltd';
+  // static String get baseUrl => AppConfig.instance.baseUrl;
+  static String baseUrl = 'https://zaika.life';
   static const String categoryUri = '/api/v1/categories';
   static const String bannerUri = '/api/v1/banners';
   static const String restaurantProductUri = '/api/v1/products/latest';

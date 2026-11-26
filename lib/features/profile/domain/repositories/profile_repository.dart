@@ -5,7 +5,7 @@ import 'package:zaika/features/profile/domain/models/update_user_model.dart';
 import 'package:zaika/features/profile/domain/models/userinfo_model.dart';
 import 'package:zaika/features/profile/domain/repositories/profile_repository_interface.dart';
 import 'package:zaika/util/app_constants.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileRepository implements ProfileRepositoryInterface {
@@ -17,12 +17,25 @@ class ProfileRepository implements ProfileRepositoryInterface {
     ResponseModel responseModel;
     Response response = await apiClient.postMultipartData(AppConstants.updateProfileUri, userInfoModel.toJson(), [MultipartBody('image', data)], [], handleError: false);
     if (response.statusCode == 200) {
-      responseModel = ResponseModel(true, response.body['message'],
-        updateProfileResponseModel: response.body['verification_on'] != null ? UpdateProfileResponseModel.fromJson(response.body) : null,
+      String message = 'profile_updated_successfully'.tr;
+      if (response.body != null && response.body is Map && response.body['message'] != null) {
+        message = response.body['message'];
+      }
+      responseModel = ResponseModel(true, message,
+        updateProfileResponseModel: (response.body != null && response.body is Map && response.body['verification_on'] != null) ? UpdateProfileResponseModel.fromJson(response.body) : null,
       );
     } else {
-      responseModel = ResponseModel(false, response.statusText,
-        updateProfileResponseModel: response.body['verification_on'] != null ? UpdateProfileResponseModel.fromJson(response.body) : null,
+      String? errorMessage;
+      if (response.body != null && response.body is Map) {
+        if (response.body['errors'] != null && (response.body['errors'] is List) && (response.body['errors'] as List).isNotEmpty) {
+          errorMessage = response.body['errors'][0]['message'];
+        } else if (response.body['message'] != null) {
+          errorMessage = response.body['message'];
+        }
+      }
+      errorMessage ??= response.statusText ?? 'something_went_wrong'.tr;
+      responseModel = ResponseModel(false, errorMessage,
+        updateProfileResponseModel: (response.body != null && response.body is Map && response.body['verification_on'] != null) ? UpdateProfileResponseModel.fromJson(response.body) : null,
       );
     }
     return responseModel;

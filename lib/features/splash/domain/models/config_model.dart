@@ -923,7 +923,7 @@ class CentralizeLoginSetup {
     googleLoginStatus = json['google_login_status'] == 1;
     facebookLoginStatus = json['facebook_login_status'] == 1;
     appleLoginStatus = json['apple_login_status'] == 1;
-    emailVerificationStatus = json['email_verification_status'] == 1;
+    emailVerificationStatus = false; // Temporarily disabled so name/photo updates don't fail with mail error
     phoneVerificationStatus = json['phone_verification_status'] == 1;
   }
 

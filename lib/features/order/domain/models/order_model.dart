@@ -39,6 +39,7 @@ class OrderModel {
   double? orderAmount;
   double? couponDiscountAmount;
   String? couponDiscountTitle;
+  double? signupBonus;
   String? paymentStatus;
   String? orderStatus;
   double? totalTaxAmount;
@@ -94,6 +95,7 @@ class OrderModel {
     this.orderAmount,
     this.couponDiscountAmount,
     this.couponDiscountTitle,
+    this.signupBonus,
     this.paymentStatus,
     this.orderStatus,
     this.totalTaxAmount,
@@ -150,6 +152,7 @@ class OrderModel {
     orderAmount = json['order_amount']?.toDouble();
     couponDiscountAmount = json['coupon_discount_amount']?.toDouble();
     couponDiscountTitle = json['coupon_discount_title'];
+    signupBonus = json['signup_bonus']?.toDouble();
     paymentStatus = json['payment_status'];
     orderStatus = json['order_status'];
     totalTaxAmount = json['total_tax_amount']?.toDouble();
@@ -178,21 +181,30 @@ class OrderModel {
     failed = json['failed'];
     detailsCount = json['details_count'];
     processingTime = json['processing_time'];
-    deliveryMan = json['delivery_man'] != null ? DeliveryMan.fromJson(json['delivery_man']) : null;
-    restaurant = json['restaurant'] != null ? Restaurant.fromJson(json['restaurant']) : null;
-    deliveryAddress = json['delivery_address'] != null ? AddressModel.fromJson(json['delivery_address']) : null;
+    deliveryMan = json['delivery_man'] != null
+        ? DeliveryMan.fromJson(json['delivery_man'])
+        : null;
+    restaurant = json['restaurant'] != null
+        ? Restaurant.fromJson(json['restaurant'])
+        : null;
+    deliveryAddress = json['delivery_address'] != null
+        ? AddressModel.fromJson(json['delivery_address'])
+        : null;
     refund = json['refund'] != null ? Refund.fromJson(json['refund']) : null;
     taxStatus = json['tax_status'] == 'included' ? true : false;
     cancellationReason = json['cancellation_reason'];
     cancellationNote = json['cancellation_note'];
     subscriptionId = json['subscription_id'];
-    subscription = json['subscription'] != null ? SubscriptionModel.fromJson(json['subscription']) : null;
+    subscription = json['subscription'] != null
+        ? SubscriptionModel.fromJson(json['subscription'])
+        : null;
     cutlery = json['cutlery'];
     unavailableItemNote = json['unavailable_item_note'];
     deliveryInstruction = json['delivery_instruction'];
     additionalCharge = json['additional_charge']?.toDouble() ?? 0;
     if (json['partially_paid_amount'] != null) {
-      partiallyPaidAmount = double.parse(json['partially_paid_amount'].toString());
+      partiallyPaidAmount =
+          double.parse(json['partially_paid_amount'].toString());
     }
     if (json['payments'] != null) {
       payments = <Payments>[];
@@ -200,16 +212,19 @@ class OrderModel {
         payments!.add(Payments.fromJson(v));
       });
     }
-    if (json['order_proof_full_url'] != null && json['order_proof_full_url'] != "null") {
+    if (json['order_proof_full_url'] != null &&
+        json['order_proof_full_url'] != "null") {
       orderProofFullUrl = [];
       json['order_proof_full_url'].forEach((v) {
-        if(v != null) {
+        if (v != null) {
           orderProofFullUrl!.add(v.toString());
         }
       });
     }
 
-    offlinePayment = json['offline_payment'] != null ? OfflinePayment.fromJson(json['offline_payment']) : null;
+    offlinePayment = json['offline_payment'] != null
+        ? OfflinePayment.fromJson(json['offline_payment'])
+        : null;
     extraPackagingAmount = json['extra_packaging_amount']?.toDouble();
     referrerBonusAmount = json['ref_bonus_amount']?.toDouble();
     orderReference = json['order_reference'] != null
@@ -224,6 +239,7 @@ class OrderModel {
     data['order_amount'] = orderAmount;
     data['coupon_discount_amount'] = couponDiscountAmount;
     data['coupon_discount_title'] = couponDiscountTitle;
+    data['signup_bonus'] = signupBonus;
     data['payment_status'] = paymentStatus;
     data['order_status'] = orderStatus;
     data['total_tax_amount'] = totalTaxAmount;
@@ -339,7 +355,9 @@ class DeliveryMan {
     lat = json['lat'];
     lng = json['lng'];
     location = json['location'];
-    restaurantId = json['restaurant_id'] != null ? int.parse(json['restaurant_id'].toString()) : null;
+    restaurantId = json['restaurant_id'] != null
+        ? int.parse(json['restaurant_id'].toString())
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -561,7 +579,8 @@ class SubscriptionModel {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     isPausedToday = json['is_paused_today'];
-    restaurant = json['restaurant'] != null ? Restaurant.fromJson(json['store']) : null;
+    restaurant =
+        json['restaurant'] != null ? Restaurant.fromJson(json['store']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -595,12 +614,13 @@ class OrderReference {
   String? createdAt;
   String? updatedAt;
 
-  OrderReference({this.id,
-        this.orderId,
-        this.tokenNumber,
-        this.tableNumber,
-        this.createdAt,
-        this.updatedAt});
+  OrderReference(
+      {this.id,
+      this.orderId,
+      this.tokenNumber,
+      this.tableNumber,
+      this.createdAt,
+      this.updatedAt});
 
   OrderReference.fromJson(Map<String, dynamic> json) {
     id = json['id'];

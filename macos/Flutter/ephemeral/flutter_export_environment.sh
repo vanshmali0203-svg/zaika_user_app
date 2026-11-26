@@ -1,11 +1,12 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/lalitgovindjadhav/Downloads/zaika_apps/Flutter 3.29.3"
-export "FLUTTER_APPLICATION_PATH=/Users/lalitgovindjadhav/Downloads/zaika_apps/zaika_user_app"
+export "FLUTTER_ROOT=/Users/lalitgovindjadhav/development/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/lalitgovindjadhav/Documents/punam/zaika_user_app"
+export "FLUTTER_FRAMEWORK_SWIFT_PACKAGE_PATH=/Users/lalitgovindjadhav/Documents/punam/zaika_user_app/macos/Flutter/ephemeral/Packages/.packages/FlutterFramework"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
-export "FLUTTER_BUILD_NAME=1.0.10"
-export "FLUTTER_BUILD_NUMBER=18"
+export "FLUTTER_BUILD_NAME=1.0.17"
+export "FLUTTER_BUILD_NUMBER=26"
 export "DART_OBFUSCATION=false"
 export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"

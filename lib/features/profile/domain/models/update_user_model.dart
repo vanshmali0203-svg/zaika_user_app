@@ -23,19 +23,22 @@ class UpdateUserModel {
 
   Map<String, String> toJson() {
     final Map<String, String> data = <String, String>{};
-    data['name'] = name??'';
-    data['email'] = email??'';
-    data['phone'] = phone??'';
-    data['otp'] = otp??'';
-    data['button_type'] = buttonType??'';
+    data['name'] = name ?? '';
+    List<String> parts = (name ?? '').trim().split(' ');
+    data['f_name'] = parts.isNotEmpty ? parts.first : '';
+    data['l_name'] = parts.length > 1 ? parts.sublist(1).join(' ') : (parts.isNotEmpty ? parts.first : '');
+    data['email'] = email ?? '';
+    data['phone'] = phone ?? '';
+    data['otp'] = otp ?? '';
+    data['button_type'] = (buttonType != null && buttonType!.isNotEmpty) ? buttonType! : 'update';
     if (sessionInfo != null) {
-      data['session_info'] = sessionInfo??'';
+      data['session_info'] = sessionInfo ?? '';
     }
     if (verificationOn != null) {
-      data['verification_on'] = verificationOn??'';
+      data['verification_on'] = verificationOn ?? '';
     }
     if (verificationMedium != null) {
-      data['verification_medium'] = verificationMedium??'';
+      data['verification_medium'] = verificationMedium ?? '';
     }
     return data;
   }

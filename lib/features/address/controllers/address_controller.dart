@@ -25,21 +25,26 @@ class AddressController extends GetxController implements GetxService {
     return responseModel;
   }
 
-  Future<void> getAddressList({bool canInsertAddress = false, DataSourceEnum dataSource = DataSourceEnum.local}) async {
+  Future<void> getAddressList(
+      {bool canInsertAddress = false,
+      DataSourceEnum dataSource = DataSourceEnum.local}) async {
     _addressList = null;
     List<AddressModel>? addressList;
 
-    if(dataSource == DataSourceEnum.local){
-      addressList = await addressServiceInterface.getList(source: DataSourceEnum.local);
+    if (dataSource == DataSourceEnum.local) {
+      addressList =
+          await addressServiceInterface.getList(source: DataSourceEnum.local);
       _prepareAddressList(addressList, canInsertAddress: canInsertAddress);
       getAddressList(dataSource: DataSourceEnum.client);
-    }else{
-      addressList = await addressServiceInterface.getList(source: DataSourceEnum.client);
+    } else {
+      addressList =
+          await addressServiceInterface.getList(source: DataSourceEnum.client);
       _prepareAddressList(addressList, canInsertAddress: canInsertAddress);
     }
   }
 
-  _prepareAddressList(List<AddressModel>? addressList, {bool canInsertAddress = false}) {
+  _prepareAddressList(List<AddressModel>? addressList,
+      {bool canInsertAddress = false}) {
     if (addressList != null) {
       _addressList = [];
       _allAddressList = [];
@@ -52,10 +57,12 @@ class AddressController extends GetxController implements GetxService {
     update();
   }
 
-  Future<ResponseModel> addAddress(AddressModel addressModel, bool fromCheckout, int? restaurantZoneId) async {
+  Future<ResponseModel> addAddress(AddressModel addressModel, bool fromCheckout,
+      int? restaurantZoneId) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await addressServiceInterface.add(addressModel, fromCheckout, restaurantZoneId);
+    ResponseModel responseModel = await addressServiceInterface.add(
+        addressModel, fromCheckout, restaurantZoneId);
     _isLoading = false;
     update();
     return responseModel;
@@ -68,15 +75,18 @@ class AddressController extends GetxController implements GetxService {
 
   void filterAddresses(String queryText) {
     if (_addressList != null) {
-      _addressList = addressServiceInterface.filterAddresses(_addressList!, queryText);
+      _addressList =
+          addressServiceInterface.filterAddresses(_addressList!, queryText);
       update();
     }
   }
 
-  Future<ResponseModel> updateAddress(AddressModel addressModel, int? addressId) async {
+  Future<ResponseModel> updateAddress(
+      AddressModel addressModel, int? addressId) async {
     _isLoading = true;
     update();
-    ResponseModel responseModel = await addressServiceInterface.update(addressModel.toJson(), addressId!);
+    ResponseModel responseModel =
+        await addressServiceInterface.update(addressModel.toJson(), addressId!);
     if (responseModel.isSuccess) {
       Get.find<AddressController>().getAddressList();
     }

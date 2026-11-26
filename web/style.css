@@ -10,11 +10,11 @@ body {
 }
 /* Loader */
 .preloader {
+  display: none !important;
   position: fixed;
   inline-size: 100%;
   block-size: 100%;
   background-color: #fff;
-  display: grid;
   place-items: center;
 }
 .theme-dark .preloader {

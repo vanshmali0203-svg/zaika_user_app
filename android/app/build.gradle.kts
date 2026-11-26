@@ -1,65 +1,34 @@
-plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services")
-}
-
 import java.util.Properties
 import java.io.FileInputStream
 
-// Load local.properties for Flutter versions
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.inputStream())
+plugins {
+    id("com.android.application")
+    id("dev.flutter.flutter-gradle-plugin")
 }
 
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
-val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
-
-// Load key.properties for signing
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
+
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
 android {
-    namespace = "com.zaika.user"
+    namespace = "com.example.zaika"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
-    flavorDimensions.add("default")
-    productFlavors {
-        create("staging") {
-            dimension = "default"
-            applicationIdSuffix = ".staging"
-            resValue("string", "app_name", "Zaika Staging")
-        }
-        create("production") {
-            dimension = "default"
-            resValue("string", "app_name", "Zaika")
-        }
-    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     defaultConfig {
         applicationId = "com.zaika.user"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInt()
-        versionName = flutterVersionName
-        multiDexEnabled = true
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     signingConfigs {
@@ -72,15 +41,15 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
-            isShrinkResources = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
@@ -90,6 +59,4 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
-    implementation("com.google.firebase:firebase-messaging:23.4.1")
-    implementation("com.facebook.android:facebook-android-sdk:latest.release")
 }

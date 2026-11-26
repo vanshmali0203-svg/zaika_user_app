@@ -46,8 +46,8 @@ class _PickMapScreenState extends State<PickMapScreen> {
       Get.find<LocationController>().setPickData();
     }
     _initialPosition = LatLng(
-      double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lat ?? '0'),
-      double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lng ?? '0'),
+      double.parse(Get.find<SplashController>().configModel?.defaultLocation?.lat ?? '20.0059'),
+      double.parse(Get.find<SplashController>().configModel?.defaultLocation?.lng ?? '73.7902'),
     );
   }
 
@@ -85,7 +85,9 @@ class _PickMapScreenState extends State<PickMapScreen> {
                 locationController.disableButton();
               },
               onCameraIdle: () {
-                Get.find<LocationController>().updatePosition(_cameraPosition, false);
+                if(_cameraPosition != null) {
+                  Get.find<LocationController>().updatePosition(_cameraPosition, false);
+                }
               },
               style: Get.isDarkMode ? Get.find<ThemeController>().darkMap : Get.find<ThemeController>().lightMap,
             ),
@@ -95,7 +97,7 @@ class _PickMapScreenState extends State<PickMapScreen> {
 
             Positioned(
               top: Dimensions.paddingSizeLarge, left: Dimensions.paddingSizeSmall, right: Dimensions.paddingSizeSmall,
-              child: LocationSearchDialog(mapController: _mapController, pickedLocation: locationController.pickAddress!),
+              child: LocationSearchDialog(mapController: _mapController, pickedLocation: locationController.pickAddress ?? ''),
               /*child: InkWell(
                 onTap: () => Get.dialog(LocationSearchDialog(mapController: _mapController)),
                 child: Container(
@@ -147,7 +149,7 @@ class _PickMapScreenState extends State<PickMapScreen> {
   }
 
   void _onPickAddressButtonPressed(LocationController locationController) {
-    if(locationController.pickPosition.latitude != 0 && locationController.pickAddress!.isNotEmpty) {
+    if(locationController.pickPosition.latitude != 0 && (locationController.pickAddress?.isNotEmpty ?? false)) {
       if(widget.fromAddAddress) {
         if(widget.googleMapController != null) {
           widget.googleMapController!.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(

@@ -39,11 +39,15 @@ class CheckoutScreen extends StatefulWidget {
   final List<CartModel>? cartList;
   final bool fromCart;
   final bool fromDineInPage;
+  final double discount;
+  final double itemsPrice;
   const CheckoutScreen(
       {super.key,
       required this.fromCart,
       required this.cartList,
-      this.fromDineInPage = false});
+      this.fromDineInPage = false,
+      required this.discount,
+      required this.itemsPrice});
 
   @override
   CheckoutScreenState createState() => CheckoutScreenState();
@@ -335,14 +339,44 @@ class CheckoutScreenState extends State<CheckoutScreen> {
                     }
                   }
 
+                  double itemPrice = widget.itemsPrice;
+                  debugPrint(
+                      "items and discount price on Checkout Screen: $itemPrice");
+                  _calculatePrice(_cartList);
+
                   double price = _calculatePrice(_cartList);
+                  double? signupBonus = (Get.find<ProfileController>()
+                              .userInfoModel
+                              ?.signUpBonus! !=
+                          0
+                      ? ((Get.find<ProfileController>()
+                                  .userInfoModel
+                                  ?.signUpBonuspercent! ??
+                              0) /
+                          100 *
+                          itemPrice)
+                      : 0);
+                  debugPrint("Signup Bonus: $signupBonus");
+
+                  //     (Get.find<ProfileController>()
+                  //                 .userInfoModel
+                  //                 ?.signUpBonus! !=
+                  //             0
+                  //         ? (Get.find<ProfileController>()
+                  //                 .userInfoModel
+                  //                 ?.signUpBonuspercent! ??
+                  //             0 / 100 * price)
+                  //         : 0);
+
                   double addOnsPrice = _calculateAddonsPrice(_cartList);
-                  double? discount = _calculateDiscountPrice(_cartList,
-                      checkoutController.restaurant, price, addOnsPrice);
+                  //   double? discount = _calculateDiscountPrice(_cartList,
+                  //       checkoutController.restaurant, price, addOnsPrice)
+                  double discount = widget.discount;
+                  price = itemPrice - signupBonus - discount;
                   double? couponDiscount =
                       PriceConverter.toFixed(couponController.discount!);
 
-                  double subTotal = _calculateSubTotal(price, addOnsPrice);
+                  double subTotal = _calculateSubTotal(price, 0, addOnsPrice);
 
                   double referralDiscount = _calculateReferralDiscount(
                       subTotal,
@@ -351,15 +385,15 @@ class CheckoutScreenState extends State<CheckoutScreen> {
                       checkoutController.subscriptionOrder);
 
                   // double orderAmount = _calculateOrderAmount(price, addOnsPrice, discount, couponDiscount, referralDiscount);
-                  double orderAmount = _calculateOrderAmount(
-                      price, addOnsPrice, 0, couponDiscount, referralDiscount);
+                  double orderAmount = _calculateOrderAmount(price, addOnsPrice,
+                      discount, couponDiscount, referralDiscount);
 
                   bool taxIncluded =
                       Get.find<SplashController>().configModel!.taxIncluded ==
                           1;
                   // double tax = _calculateTax(taxIncluded, orderAmount, taxPercent);
-                  double tax = _calculateTax(
-                      taxIncluded, orderAmount - discount, taxPercent);
+                  // double tax = _calculateTax(taxIncluded, orderAmount-discount, taxPercent); last one
+                  double tax = _calculateTax(taxIncluded, price, taxPercent);
                   bool restaurantSubscriptionActive = false;
                   int subscriptionQty =
                       checkoutController.subscriptionOrder ? 0 : 1;
@@ -404,7 +438,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
                   double total = _calculateTotal(
                       subTotal,
                       deliveryCharge,
-                      discount,
+                      0,
                       couponDiscount,
                       taxIncluded,
                       tax,
@@ -447,251 +481,244 @@ class CheckoutScreenState extends State<CheckoutScreen> {
                                 child: Center(
                                   child: SizedBox(
                                     width: Dimensions.webMaxWidth,
-                                    child: ResponsiveHelper.isDesktop(context)
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: Dimensions
-                                                    .paddingSizeLarge),
-                                            child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Expanded(
-                                                      flex: 6,
-                                                      child: TopSectionWidget(
-                                                        charge: charge,
-                                                        deliveryCharge:
-                                                            deliveryCharge,
-                                                        locationController:
-                                                            locationController,
-                                                        tomorrowClosed:
-                                                            tomorrowClosed,
-                                                        todayClosed:
-                                                            todayClosed,
-                                                        price: price,
-                                                        discount: discount,
-                                                        addOns: addOnsPrice,
-                                                        restaurantSubscriptionActive:
-                                                            restaurantSubscriptionActive,
-                                                        showTips: showTips,
-                                                        isCashOnDeliveryActive:
-                                                            _isCashOnDeliveryActive!,
-                                                        isDigitalPaymentActive:
-                                                            _isDigitalPaymentActive!,
-                                                        isWalletActive:
-                                                            _isWalletActive,
-                                                        fromCart:
-                                                            widget.fromCart,
-                                                        total: total,
-                                                        tooltipController3:
-                                                            tooltipController3,
-                                                        tooltipController2:
-                                                            tooltipController2,
-                                                        guestNameTextEditingController:
-                                                            guestContactPersonNameController,
-                                                        guestNumberTextEditingController:
-                                                            guestContactPersonNumberController,
-                                                        guestEmailController:
-                                                            guestEmailController,
-                                                        guestEmailNode:
-                                                            guestEmailNode,
-                                                        guestNumberNode:
-                                                            guestNumberNode,
-                                                        isOfflinePaymentActive:
-                                                            _isOfflinePaymentActive,
-                                                        loginTooltipController:
-                                                            loginTooltipController,
-                                                        callBack: () =>
-                                                            initCall(),
-                                                        deliveryChargeForView:
-                                                            _deliveryChargeForView,
-                                                        deliveryFeeTooltipController:
-                                                            deliveryFeeTooltipController,
-                                                        badWeatherCharge:
-                                                            badWeatherChargeForToolTip,
-                                                        extraChargeForToolTip:
-                                                            extraChargeForToolTip,
-                                                        deliveryOptionScrollController:
-                                                            deliveryOptionScrollController,
-                                                      )),
-                                                  const SizedBox(
-                                                      width: Dimensions
-                                                          .paddingSizeLarge),
-                                                  Expanded(
-                                                    flex: 4,
-                                                    child: BottomSectionWidget(
-                                                      isCashOnDeliveryActive:
-                                                          _isCashOnDeliveryActive!,
-                                                      isDigitalPaymentActive:
-                                                          _isDigitalPaymentActive!,
-                                                      isWalletActive:
-                                                          _isWalletActive,
-                                                      total: total,
-                                                      subTotal: subTotal,
-                                                      discount: discount,
-                                                      couponController:
-                                                          couponController,
-                                                      taxIncluded: taxIncluded,
-                                                      tax: tax,
-                                                      deliveryCharge:
-                                                          deliveryCharge,
-                                                      checkoutController:
-                                                          checkoutController,
-                                                      locationController:
-                                                          locationController,
-                                                      todayClosed: todayClosed,
-                                                      tomorrowClosed:
-                                                          tomorrowClosed,
-                                                      orderAmount: orderAmount,
-                                                      maxCodOrderAmount:
-                                                          maxCodOrderAmount,
-                                                      subscriptionQty:
-                                                          subscriptionQty,
-                                                      taxPercent: taxPercent!,
-                                                      fromCart: widget.fromCart,
-                                                      cartList: _cartList!,
-                                                      price: price,
-                                                      addOns: addOnsPrice,
-                                                      charge: charge,
-                                                      guestNumberTextEditingController:
-                                                          guestContactPersonNumberController,
-                                                      guestNumberNode:
-                                                          guestNumberNode,
-                                                      guestEmailController:
-                                                          guestEmailController,
-                                                      guestEmailNode:
-                                                          guestEmailNode,
-                                                      guestNameTextEditingController:
-                                                          guestContactPersonNameController,
-                                                      isOfflinePaymentActive:
-                                                          _isOfflinePaymentActive,
-                                                      expansionTileController:
-                                                          expansionTileController,
-                                                      serviceFeeTooltipController:
-                                                          serviceFeeTooltipController,
-                                                      referralDiscount:
-                                                          referralDiscount,
-                                                      extraPackagingAmount:
-                                                          extraPackagingCharge,
-                                                    ),
-                                                  )
-                                                ]),
-                                          )
-                                        : Column(
+                                    child:
+                                        // ResponsiveHelper.isDesktop(context)
+                                        //     ? Padding(
+                                        //         padding: const EdgeInsets.only(
+                                        //             top: Dimensions
+                                        //                 .paddingSizeLarge),
+                                        //         child: Row(
+                                        //             crossAxisAlignment:
+                                        //                 CrossAxisAlignment.start,
+                                        //             mainAxisAlignment:
+                                        //                 MainAxisAlignment.center,
+                                        //             children: [
+                                        //               Expanded(
+                                        //                   flex: 6,
+                                        //                   child: TopSectionWidget(
+                                        //                     charge: charge,
+                                        //                     deliveryCharge:
+                                        //                         deliveryCharge,
+                                        //                     locationController:
+                                        //                         locationController,
+                                        //                     tomorrowClosed:
+                                        //                         tomorrowClosed,
+                                        //                     todayClosed:
+                                        //                         todayClosed,
+                                        //                     price: price,
+                                        //                     discount: discount,
+                                        //                     addOns: addOnsPrice,
+                                        //                     restaurantSubscriptionActive:
+                                        //                         restaurantSubscriptionActive,
+                                        //                     showTips: showTips,
+                                        //                     isCashOnDeliveryActive:
+                                        //                         _isCashOnDeliveryActive!,
+                                        //                     isDigitalPaymentActive:
+                                        //                         _isDigitalPaymentActive!,
+                                        //                     isWalletActive:
+                                        //                         _isWalletActive,
+                                        //                     fromCart:
+                                        //                         widget.fromCart,
+                                        //                     total: total,
+                                        //                     tooltipController3:
+                                        //                         tooltipController3,
+                                        //                     tooltipController2:
+                                        //                         tooltipController2,
+                                        //                     guestNameTextEditingController:
+                                        //                         guestContactPersonNameController,
+                                        //                     guestNumberTextEditingController:
+                                        //                         guestContactPersonNumberController,
+                                        //                     guestEmailController:
+                                        //                         guestEmailController,
+                                        //                     guestEmailNode:
+                                        //                         guestEmailNode,
+                                        //                     guestNumberNode:
+                                        //                         guestNumberNode,
+                                        //                     isOfflinePaymentActive:
+                                        //                         _isOfflinePaymentActive,
+                                        //                     loginTooltipController:
+                                        //                         loginTooltipController,
+                                        //                     callBack: () =>
+                                        //                         initCall(),
+                                        //                     deliveryChargeForView:
+                                        //                         _deliveryChargeForView,
+                                        //                     deliveryFeeTooltipController:
+                                        //                         deliveryFeeTooltipController,
+                                        //                     badWeatherCharge:
+                                        //                         badWeatherChargeForToolTip,
+                                        //                     extraChargeForToolTip:
+                                        //                         extraChargeForToolTip,
+                                        //                     deliveryOptionScrollController:
+                                        //                         deliveryOptionScrollController,
+                                        //                   )),
+                                        //               const SizedBox(
+                                        //                   width: Dimensions
+                                        //                       .paddingSizeLarge),
+                                        //               Expanded(
+                                        //                 flex: 4,
+                                        //                 child: BottomSectionWidget(
+                                        //                   itemPrice: itemPrice,
+                                        //                   isCashOnDeliveryActive:
+                                        //                       _isCashOnDeliveryActive!,
+                                        //                   isDigitalPaymentActive:
+                                        //                       _isDigitalPaymentActive!,
+                                        //                   isWalletActive:
+                                        //                       _isWalletActive,
+                                        //                   total: total,
+                                        //                   subTotal: subTotal,
+                                        //                   discount: discount,
+                                        //                   couponController:
+                                        //                       couponController,
+                                        //                   taxIncluded: taxIncluded,
+                                        //                   tax: tax,
+                                        //                   deliveryCharge:
+                                        //                       deliveryCharge,
+                                        //                   checkoutController:
+                                        //                       checkoutController,
+                                        //                   locationController:
+                                        //                       locationController,
+                                        //                   todayClosed: todayClosed,
+                                        //                   tomorrowClosed:
+                                        //                       tomorrowClosed,
+                                        //                   orderAmount: orderAmount,
+                                        //                   maxCodOrderAmount:
+                                        //                       maxCodOrderAmount,
+                                        //                   subscriptionQty:
+                                        //                       subscriptionQty,
+                                        //                   taxPercent: taxPercent!,
+                                        //                   fromCart: widget.fromCart,
+                                        //                   cartList: _cartList!,
+                                        //                   price: price,
+                                        //                   addOns: addOnsPrice,
+                                        //                   charge: charge,
+                                        //                   guestNumberTextEditingController:
+                                        //                       guestContactPersonNumberController,
+                                        //                   guestNumberNode:
+                                        //                       guestNumberNode,
+                                        //                   guestEmailController:
+                                        //                       guestEmailController,
+                                        //                   guestEmailNode:
+                                        //                       guestEmailNode,
+                                        //                   guestNameTextEditingController:
+                                        //                       guestContactPersonNameController,
+                                        //                   isOfflinePaymentActive:
+                                        //                       _isOfflinePaymentActive,
+                                        //                   expansionTileController:
+                                        //                       expansionTileController,
+                                        //                   serviceFeeTooltipController:
+                                        //                       serviceFeeTooltipController,
+                                        //                   referralDiscount:
+                                        //                       referralDiscount,
+                                        //                   extraPackagingAmount:
+                                        //                       extraPackagingCharge,
+                                        //                   signupBonus: signupBonus,
+                                        //                 ),
+                                        //               )
+                                        //             ]),
+                                        //       )
+                                        // :
+                                        Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                                TopSectionWidget(
-                                                  charge: charge,
-                                                  deliveryCharge:
-                                                      deliveryCharge,
-                                                  locationController:
-                                                      locationController,
-                                                  tomorrowClosed:
-                                                      tomorrowClosed,
-                                                  todayClosed: todayClosed,
-                                                  price: price,
-                                                  discount: discount,
-                                                  addOns: addOnsPrice,
-                                                  restaurantSubscriptionActive:
-                                                      restaurantSubscriptionActive,
-                                                  showTips: showTips,
-                                                  isCashOnDeliveryActive:
-                                                      _isCashOnDeliveryActive!,
-                                                  isDigitalPaymentActive:
-                                                      _isDigitalPaymentActive!,
-                                                  isWalletActive:
-                                                      _isWalletActive,
-                                                  fromCart: widget.fromCart,
-                                                  total: total,
-                                                  tooltipController3:
-                                                      tooltipController3,
-                                                  tooltipController2:
-                                                      tooltipController2,
-                                                  guestNameTextEditingController:
-                                                      guestContactPersonNameController,
-                                                  guestNumberTextEditingController:
-                                                      guestContactPersonNumberController,
-                                                  guestEmailController:
-                                                      guestEmailController,
-                                                  guestEmailNode:
-                                                      guestEmailNode,
-                                                  guestNumberNode:
-                                                      guestNumberNode,
-                                                  isOfflinePaymentActive:
-                                                      _isOfflinePaymentActive,
-                                                  loginTooltipController:
-                                                      loginTooltipController,
-                                                  callBack: () => initCall(),
-                                                  deliveryChargeForView:
-                                                      _deliveryChargeForView,
-                                                  deliveryFeeTooltipController:
-                                                      deliveryFeeTooltipController,
-                                                  badWeatherCharge:
-                                                      badWeatherChargeForToolTip,
-                                                  extraChargeForToolTip:
-                                                      extraChargeForToolTip,
-                                                  deliveryOptionScrollController:
-                                                      deliveryOptionScrollController,
-                                                ),
-                                                BottomSectionWidget(
-                                                  isCashOnDeliveryActive:
-                                                      _isCashOnDeliveryActive!,
-                                                  isDigitalPaymentActive:
-                                                      _isDigitalPaymentActive!,
-                                                  isWalletActive:
-                                                      _isWalletActive,
-                                                  total: total,
-                                                  subTotal: subTotal,
-                                                  discount: discount,
-                                                  couponController:
-                                                      couponController,
-                                                  taxIncluded: taxIncluded,
-                                                  tax: tax,
-                                                  deliveryCharge:
-                                                      deliveryCharge,
-                                                  checkoutController:
-                                                      checkoutController,
-                                                  locationController:
-                                                      locationController,
-                                                  todayClosed: todayClosed,
-                                                  tomorrowClosed:
-                                                      tomorrowClosed,
-                                                  orderAmount: orderAmount,
-                                                  maxCodOrderAmount:
-                                                      maxCodOrderAmount,
-                                                  subscriptionQty:
-                                                      subscriptionQty,
-                                                  taxPercent: taxPercent!,
-                                                  fromCart: widget.fromCart,
-                                                  cartList: _cartList!,
-                                                  price: price,
-                                                  addOns: addOnsPrice,
-                                                  charge: charge,
-                                                  guestNumberTextEditingController:
-                                                      guestContactPersonNumberController,
-                                                  guestNumberNode:
-                                                      guestNumberNode,
-                                                  guestEmailController:
-                                                      guestEmailController,
-                                                  guestEmailNode:
-                                                      guestEmailNode,
-                                                  guestNameTextEditingController:
-                                                      guestContactPersonNameController,
-                                                  isOfflinePaymentActive:
-                                                      _isOfflinePaymentActive,
-                                                  expansionTileController:
-                                                      expansionTileController,
-                                                  serviceFeeTooltipController:
-                                                      serviceFeeTooltipController,
-                                                  referralDiscount:
-                                                      referralDiscount,
-                                                  extraPackagingAmount:
-                                                      extraPackagingCharge,
-                                                ),
-                                              ]),
+                                          TopSectionWidget(
+                                            charge: charge,
+                                            deliveryCharge: deliveryCharge,
+                                            locationController:
+                                                locationController,
+                                            tomorrowClosed: tomorrowClosed,
+                                            todayClosed: todayClosed,
+                                            price: price,
+                                            discount: discount,
+                                            addOns: addOnsPrice,
+                                            restaurantSubscriptionActive:
+                                                restaurantSubscriptionActive,
+                                            showTips: showTips,
+                                            isCashOnDeliveryActive:
+                                                _isCashOnDeliveryActive!,
+                                            isDigitalPaymentActive:
+                                                _isDigitalPaymentActive!,
+                                            isWalletActive: _isWalletActive,
+                                            fromCart: widget.fromCart,
+                                            total: total,
+                                            tooltipController3:
+                                                tooltipController3,
+                                            tooltipController2:
+                                                tooltipController2,
+                                            guestNameTextEditingController:
+                                                guestContactPersonNameController,
+                                            guestNumberTextEditingController:
+                                                guestContactPersonNumberController,
+                                            guestEmailController:
+                                                guestEmailController,
+                                            guestEmailNode: guestEmailNode,
+                                            guestNumberNode: guestNumberNode,
+                                            isOfflinePaymentActive:
+                                                _isOfflinePaymentActive,
+                                            loginTooltipController:
+                                                loginTooltipController,
+                                            callBack: () => initCall(),
+                                            deliveryChargeForView:
+                                                _deliveryChargeForView,
+                                            deliveryFeeTooltipController:
+                                                deliveryFeeTooltipController,
+                                            badWeatherCharge:
+                                                badWeatherChargeForToolTip,
+                                            extraChargeForToolTip:
+                                                extraChargeForToolTip,
+                                            deliveryOptionScrollController:
+                                                deliveryOptionScrollController,
+                                          ),
+                                          BottomSectionWidget(
+                                            itemPrice: itemPrice,
+                                            isCashOnDeliveryActive:
+                                                _isCashOnDeliveryActive!,
+                                            isDigitalPaymentActive:
+                                                _isDigitalPaymentActive!,
+                                            isWalletActive: _isWalletActive,
+                                            total: total,
+                                            subTotal: subTotal,
+                                            discount: discount,
+                                            couponController: couponController,
+                                            taxIncluded: taxIncluded,
+                                            tax: tax,
+                                            deliveryCharge: deliveryCharge,
+                                            checkoutController:
+                                                checkoutController,
+                                            locationController:
+                                                locationController,
+                                            todayClosed: todayClosed,
+                                            tomorrowClosed: tomorrowClosed,
+                                            orderAmount: orderAmount,
+                                            maxCodOrderAmount:
+                                                maxCodOrderAmount,
+                                            subscriptionQty: subscriptionQty,
+                                            taxPercent: taxPercent!,
+                                            fromCart: widget.fromCart,
+                                            cartList: _cartList!,
+                                            price: price,
+                                            addOns: addOnsPrice,
+                                            charge: charge,
+                                            guestNumberTextEditingController:
+                                                guestContactPersonNumberController,
+                                            guestNumberNode: guestNumberNode,
+                                            guestEmailController:
+                                                guestEmailController,
+                                            guestEmailNode: guestEmailNode,
+                                            guestNameTextEditingController:
+                                                guestContactPersonNameController,
+                                            isOfflinePaymentActive:
+                                                _isOfflinePaymentActive,
+                                            expansionTileController:
+                                                expansionTileController,
+                                            serviceFeeTooltipController:
+                                                serviceFeeTooltipController,
+                                            referralDiscount: referralDiscount,
+                                            extraPackagingAmount:
+                                                extraPackagingCharge,
+                                            signupBonus: signupBonus,
+                                          ),
+                                        ]),
                                   ),
                                 ),
                               ),
@@ -978,7 +1005,8 @@ class CheckoutScreenState extends State<CheckoutScreen> {
     double variationPrice = 0;
     for (var cartModel in cartList!) {
       if (cartModel.product!.variations!.isEmpty) {
-        price = price + (cartModel.price! * cartModel.quantity!);
+        // price = price + (cartModel.price! * cartModel.quantity!);
+        price = price + cartModel.price!;
       }
       for (int index = 0;
           index < cartModel.product!.variations!.length;
@@ -993,6 +1021,9 @@ class CheckoutScreenState extends State<CheckoutScreen> {
           }
         }
       }
+      print("Raw Price: ${cartModel.price}");
+      print("Qty: ${cartModel.quantity}");
+      print("Calculated: ${cartModel.price! * cartModel.quantity!}");
     }
     return PriceConverter.toFixed(price + variationPrice);
   }
@@ -1099,9 +1130,10 @@ class CheckoutScreenState extends State<CheckoutScreen> {
     return variationDiscount - variationPrice;
   }
 
-  double _calculateSubTotal(double price, double addOnsPrice) {
+  double _calculateSubTotal(double price, double discount, double addOnsPrice) {
     debugPrint("Price and addOnPrice ${price} and ${addOnsPrice}");
-    double subTotal = price + addOnsPrice;
+    double subTotal = price + addOnsPrice - discount;
+
     return PriceConverter.toFixed(subTotal);
   }
 
@@ -1118,7 +1150,7 @@ class CheckoutScreenState extends State<CheckoutScreen> {
     if (taxIncluded) {
       tax = orderAmount * taxPercent! / (100 + taxPercent);
     } else if (taxPercent == 0) {
-      tax = PriceConverter.calculation(orderAmount, 5, 'percent', 1);
+      tax = PriceConverter.calculation(orderAmount, 0, 'percent', 1);
     } else {
       tax = PriceConverter.calculation(orderAmount, taxPercent, 'percent', 1);
     }

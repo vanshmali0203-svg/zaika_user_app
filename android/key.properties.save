@@ -1,0 +1,4 @@
+storePassword=DSAds#233ja$#e
+keyPassword=DSAds#233ja$#e
+keyAlias=zaika-key
+storeFile=my-release-key.jks
